@@ -10,22 +10,6 @@ var config = {
   trustServerCertificate: true
 }
 
-sql.connect(config, function(err){
-  if (err) console.log(err.message);
-
-  var request = new sql.Request();
-           
-  // query to the database and get the records
-  request.query('select * from goals', function (err, recordset) {
-      
-      if (err) console.log(err)
-
-      // send records as a response
-      console.log(recordset);      
-  });
-})
-
-
 async function queryDb (query, values) { 
   let res = [];
   let pool = await sql.connect(config);
@@ -37,8 +21,7 @@ async function queryDb (query, values) {
   }
   pool.close; sql.close; 
   return res; 
-} 
-
+}
 
 router.get("/goals/get/:id", (req, res, next) => {
   const itemId = req.params.id;
@@ -54,7 +37,34 @@ router.get("/goals/get/:id", (req, res, next) => {
   })
 });
 
+queryDb("SELECT MAX(goalid) as mgi from Goals").then(result=>{console.log(result)})
 
+router.post("/goals/create", (req, res, next) => {
+  queryDb("SELECT MAX(goalid) as mgi from Goals")
+      .then(result=>{
+        const goalid = result.mgi + 1;
+        const empid = req.params.empid;
+        const startdate = req.params.startdate;
+        const enddate = req.params.enddate;
+        const description = req.params.description;
+        const goaltype = req.params.goaltype;
+        const status = req.params.status;
+
+        const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status];
+
+        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7)", goalinfo)
+        .catch(err=>{
+          pool.close
+          sql.close();
+          console.log(err);
+        })
+      })
+      .catch(err=>{
+        pool.close;
+        sql.close;
+        console.log(err);
+  })
+})
 
 router.get("/employee/get/:id", (req, res, next) => {
   const empId = req.params.id;
@@ -84,7 +94,6 @@ router.post('/login',function(req,res){
             console.log(err)
         }
 )});
-
 
 module.exports = router;
 
