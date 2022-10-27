@@ -26,25 +26,24 @@ sql.connect(config, function(err){
 })
 
 
-async function queryDb (query, id) {
+async function queryDb (query, values) { 
   let res = [];
   let pool = await sql.connect(config);
-  let data = await pool.request()
-      .input("id", sql.Int, id)
-      .query(query);
-     // Store each record in an array
-     for (let i=0;i<data.rowsAffected;i++){
-          res.push(data.recordset[i]);
-     }
-  pool.close;
-  sql.close;
-  return res;
-}
+  let r = await pool.request();
+  (values || []).forEach((v, i) => r.input(`_${i + 1}`, v));
+  let data = await r.query(query);
+  for (let i=0;i<data.rowsAffected;i++){ 
+    res.push(data.recordset[i]); 
+  }
+  pool.close; sql.close; 
+  return res; 
+} 
+
 
 router.get("/goals/get/:id", (req, res, next) => {
   const itemId = req.params.id;
 
-  queryDb("SELECT * from Goals where GoalID = @id", itemId)
+  queryDb("SELECT * from Goals where GoalID = @_1", [itemId])
       .then(result=>{
         res.send(result);
       })
@@ -54,11 +53,13 @@ router.get("/goals/get/:id", (req, res, next) => {
           console.log(err)
   })
 });
+
+
 
 router.get("/employee/get/:id", (req, res, next) => {
   const empId = req.params.id;
 
-  queryDb("SELECT * from Employees where EmpID=@id", empId)
+  queryDb("SELECT * from Employees where EmpID=@_1", [empId])
       .then(result=>{
         res.send(result);
       })
@@ -69,8 +70,21 @@ router.get("/employee/get/:id", (req, res, next) => {
   })
 });
 
+
+router.post('/login',function(req,res){
+  var email = req.body.email;
+  var password = req.body.password;
+  queryDb("SELECT EmpID FROM Employees WHERE email=@_1 AND password=@_2", [email, password])
+        .then(result=>{
+          res.send(result);
+        })
+        .catch(err=>{
+            pool.close;
+            sql.close;
+            console.log(err)
+        }
+)});
+
+
 module.exports = router;
-
-
-
 
