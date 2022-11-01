@@ -108,5 +108,63 @@ router.post('/login',function(req,res){
         }
 )});
 
+router.get("/goals/getAllGoals/:id", (req, res, next) => {
+  const itemId = req.params.id;
+
+  queryDb("SELECT GoalID from Goals where EmpID = @_1", [itemId])
+      .then(result=>{
+        res.send(result);
+      })
+      .catch(err=>{
+          pool.close;
+          sql.close;
+          console.log(err)
+  })
+});
+
+router.get("/comments/getAllComments/:id", (req, res, next) => {
+  const itemId = req.params.id;
+
+  queryDb("SELECT commentID from Comments where GoalID = @_1", [itemId])
+      .then(result=>{
+        res.send(result);
+      })
+      .catch(err=>{
+          pool.close;
+          sql.close;
+          console.log(err)
+  })
+});
+
+router.get("/comments/get/:id", (req, res, next) => {
+  const itemId = req.params.id;
+
+  queryDb("SELECT * from Comments where commentID = @_1", [itemId])
+      .then(result=>{
+        res.send(result);
+      })
+      .catch(err=>{
+          pool.close;
+          sql.close;
+          console.log(err)
+  })
+});
+
+
+router.get("/manager/get/:id", (req, res, next) => {
+  const itemId = req.params.id;
+
+  queryDb("SELECT empID from Employees where managedBy = @_1", [itemId])
+      .then(result=>{
+        res.send(result);
+      })
+      .catch(err=>{
+          pool.close;
+          sql.close;
+          console.log(err)
+  })
+});
+
+
 module.exports = router;
 
