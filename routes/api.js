@@ -30,7 +30,7 @@ router.get("/goals/get/:id", (req, res, next) => {
 
   queryDb("SELECT * from Goals where GoalID = @_1", [itemId])
       .then(result=>{
-        res.json(JSON.stringify(result));
+        res.send(result);
       })
       .catch(err=>{
           pool.close;
