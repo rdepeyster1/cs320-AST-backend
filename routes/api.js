@@ -54,6 +54,7 @@ router.post("/goals/create", (req, res, next) => {
         console.log(goalinfo);
         
         queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7)", goalinfo);
+        res.send(goalid)
       })
       .catch(err=>{
         pool.close;
@@ -71,6 +72,7 @@ router.post("/comments/create", (req, res, next) => {
         const commentid = result.mgi + 1;
         const commentinfo = [commentid, goalid, empid, description];
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
+        res.send(commentid)
       })
       .catch(err=>{
         pool.close;
