@@ -164,8 +164,6 @@ router.get("/manager/get/:id", (req, res, next) => {
 });
 
 
-<<<<<<< HEAD
-=======
 //Update the status of a goal
 router.post("/goal/update", function(req,res){
   var newStatus = req.body.newstatus;
@@ -181,6 +179,5 @@ router.post("/goal/update", function(req,res){
         }
 )});
 
->>>>>>> dc62a15f2a052212564fdd8cd4e0c7a0f6f3cef7
 module.exports = router;
 
