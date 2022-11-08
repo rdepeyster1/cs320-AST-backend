@@ -66,7 +66,7 @@ router.post("/comments/create", (req, res, next) => {
   const description = req.params.description;
   queryDb("SELECT MAX(commentid) as mgi from comments")
       .then(result=>{
-        const commentid = result.mgi + 1;
+        const commentid = result[0].mgi + 1;
         const commentinfo = [commentid, goalid, empid, description];
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
         res.send(commentid)
@@ -166,13 +166,9 @@ router.get("/manager/get/:id", (req, res, next) => {
 
 
 //Update the status of a goal
-
-
-
-
-router.post("/goal/update/:id", function(req,res){
+router.post("/goal/update", function(req,res){
   var newStatus = req.body.newstatus;
-  const itemId = req.params.id;
+  var itemId = req.body.goalid;
   queryDb("UPDATE Goals SET Status = @_1 WHERE GoalID = @_2", [newStatus, itemId])
         .then(result=>{
           res.send(result);
