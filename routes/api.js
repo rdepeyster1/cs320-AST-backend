@@ -51,7 +51,7 @@ router.post("/goals/create", (req, res, next) => {
         const goalid = result[0].mgi + 1;
         const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status];
         queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7)", goalinfo);
-        res.send(goalid)
+        res.send({"goalid": goalid})
       })
       .catch(err=>{
         pool.close;
@@ -61,15 +61,16 @@ router.post("/goals/create", (req, res, next) => {
 })
 
 router.post("/comments/create", (req, res, next) => {
-  const goalid = req.params.goalid;
-  const empid = req.params.empid;
-  const description = req.params.description;
+  const goalid = parseInt(req.body.goalid);
+  const empid = parseInt(req.body.empid);
+  const description = req.body.description;
   queryDb("SELECT MAX(commentid) as mgi from comments")
       .then(result=>{
         const commentid = result[0].mgi + 1;
         const commentinfo = [commentid, goalid, empid, description];
+        console.log(commentinfo)
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
-        res.send(commentid)
+        res.send({"commentid": commentid})
       })
       .catch(err=>{
         pool.close;
@@ -180,4 +181,3 @@ router.post("/goal/update", function(req,res){
 )});
 
 module.exports = router;
-
