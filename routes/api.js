@@ -149,7 +149,6 @@ router.get("/comments/get/:id", (req, res, next) => {
   })
 });
 
-
 router.get("/manager/get/:id", (req, res, next) => {
   const itemId = req.params.id;
 
@@ -164,25 +163,6 @@ router.get("/manager/get/:id", (req, res, next) => {
   })
 });
 
-
-//Update the status of a goal
-
-
-
-
-router.post("/goal/update/:id", function(req,res){
-  var newStatus = req.body.newstatus;
-  const itemId = req.params.id;
-  queryDb("UPDATE Goals SET Status = @_1 WHERE GoalID = @_2", [newStatus, itemId])
-        .then(result=>{
-          res.send(result);
-        })
-        .catch(err=>{
-            pool.close;
-            sql.close;
-            console.log(err)
-        }
-)});
 
 module.exports = router;
 

@@ -15,5 +15,9 @@
     "morgan": "~1.9.1",
     "mssql": "^9.0.1",
     "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "jtest": "0.0.1",
+    "supertest": "^6.3.1"
   }
 }
