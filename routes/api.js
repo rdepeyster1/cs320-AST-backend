@@ -166,9 +166,9 @@ router.get("/manager/get/:id", (req, res, next) => {
 
 
 //Update the status of a goal
-router.post("/goal/update", function(req,res){
+router.post("/goals/update", function(req,res){
   var newStatus = req.body.newstatus;
-  var itemId = req.body.goalid;
+  var itemId = parseInt(req.body.goalid);
   queryDb("UPDATE Goals SET Status = @_1 WHERE GoalID = @_2", [newStatus, itemId])
         .then(result=>{
           res.send(result);
