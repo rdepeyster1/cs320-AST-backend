@@ -44,12 +44,13 @@ router.post("/goals/create", (req, res, next) => {
   const description = req.body.description;
   const goaltype = req.body.goaltype;
   const status = req.body.status;
+  const goalname = req.body.goalname
   queryDb("SELECT MAX(goalid) as mgi from Goals")
       .then(result=>{
         const goalid = result[0].mgi + 1;
-        const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status];
-        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7)", goalinfo);
-        res.send(goalid)
+        const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status, goalname];
+        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7, @8)", goalinfo);
+        res.send({"goalid": goalid})
       })
       .catch(err=>{
         res.status(500).send({"Error": err});
@@ -64,8 +65,9 @@ router.post("/comments/create", (req, res, next) => {
       .then(result=>{
         const commentid = parseInt(result[0].mgi) + 1;
         const commentinfo = [commentid, goalid, empid, description];
+        console.log(commentinfo)
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
-        res.send({"commentid": commentid});
+        res.send({"commentid": commentid})
       })
       .catch(err=>{
         res.status(500).send({"Error": err});
@@ -147,9 +149,9 @@ router.get("/manager/get/:id", (req, res, next) => {
 
 
 //Update the status of a goal
-router.post("/goal/update", function(req,res){
+router.post("/goals/update", function(req,res){
   var newStatus = req.body.newstatus;
-  var itemId = req.body.goalid;
+  var itemId = parseInt(req.body.goalid);
   queryDb("UPDATE Goals SET Status = @_1 WHERE GoalID = @_2", [newStatus, itemId])
         .then(result=>{
           res.send(result);
@@ -160,4 +162,3 @@ router.post("/goal/update", function(req,res){
 )});
 
 module.exports = router;
-
