@@ -33,9 +33,7 @@ router.get("/goals/get/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -54,27 +52,23 @@ router.post("/goals/create", (req, res, next) => {
         res.send(goalid)
       })
       .catch(err=>{
-        pool.close;
-        sql.close;
-        console.log(err);
+        res.status(500).send({"Error": err});
   })
 })
 
 router.post("/comments/create", (req, res, next) => {
-  const goalid = req.params.goalid;
-  const empid = req.params.empid;
-  const description = req.params.description;
+  const goalid = parseInt(req.body.goalid);
+  const empid = parseInt(req.body.empid);
+  const description = req.body.description;
   queryDb("SELECT MAX(commentid) as mgi from comments")
       .then(result=>{
-        const commentid = result[0].mgi + 1;
+        const commentid = parseInt(result[0].mgi) + 1;
         const commentinfo = [commentid, goalid, empid, description];
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
-        res.send(commentid)
+        res.send({"commentid": commentid});
       })
       .catch(err=>{
-        pool.close;
-        sql.close;
-        console.log(err);
+        res.status(500).send({"Error": err});
   })
 })
 
@@ -86,9 +80,7 @@ router.get("/employee/get/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -101,9 +93,7 @@ router.post('/login',function(req,res){
           res.send(result);
         })
         .catch(err=>{
-            pool.close;
-            sql.close;
-            console.log(err)
+          res.status(500).send({"Error": err});
         }
 )});
 
@@ -115,9 +105,7 @@ router.get("/goals/getAllGoals/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -129,9 +117,7 @@ router.get("/comments/getAllComments/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -143,9 +129,7 @@ router.get("/comments/get/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -157,9 +141,7 @@ router.get("/manager/get/:id", (req, res, next) => {
         res.send(result);
       })
       .catch(err=>{
-          pool.close;
-          sql.close;
-          console.log(err)
+        res.status(500).send({"Error": err});
   })
 });
 
@@ -173,9 +155,7 @@ router.post("/goal/update", function(req,res){
           res.send(result);
         })
         .catch(err=>{
-            pool.close;
-            sql.close;
-            console.log(err)
+          res.status(500).send({"Error": err});
         }
 )});
 
