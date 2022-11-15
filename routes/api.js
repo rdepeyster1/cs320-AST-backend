@@ -46,11 +46,12 @@ router.post("/goals/create", (req, res, next) => {
   const description = req.body.description;
   const goaltype = req.body.goaltype;
   const status = req.body.status;
+  const goalname = req.body.goalname
   queryDb("SELECT MAX(goalid) as mgi from Goals")
       .then(result=>{
         const goalid = result[0].mgi + 1;
-        const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status];
-        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7)", goalinfo);
+        const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status, goalname];
+        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7, @8)", goalinfo);
         res.send({"goalid": goalid})
       })
       .catch(err=>{
