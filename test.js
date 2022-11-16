@@ -6,7 +6,7 @@ describe("Test all the goal API", () => {
     request(app)
       .get("/api/goals/get/1")
       .then(response => {
-        // expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(200);
         console.log("abc")
         console.log(response._body[0]);
         object = response._body[0];
@@ -28,6 +28,32 @@ describe("Test all the goal API", () => {
         done();
       });
   });
+
+  test("Test the update API for goal", done => {
+    request(app)
+      .post("/api/goals/update")
+      .send({
+        "newstatus": "inactive",
+        "goalid": "1"
+      })
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+
+        request(app)
+        .get("/api/goals/get/1")
+        .then(response => {
+          expect(response.statusCode).toBe(200);
+
+          object = response._body[0];
+          console.log(object)
+          expect(object.GoalID).toBe(1);
+          expect(object.EmpID).toBe(1);
+          expect(object.Status).toBe("inactive")
+          done();
+        });
+      });
+  })
+
 });
 describe("Tests all the Employee APIs", () => {
   test("Tests getting employee information", done => {
@@ -114,3 +140,13 @@ describe("Tests all the Comments APIs", () => {
   });
 });
 
+test("Get manager function", done => {
+  request(app)
+  .get("/api/manager/get/1")
+  .then(response => {
+    expect(response.statusCode).toBe(200);
+    object = response._body;
+    expect(Object.keys(object).length).toBe(4);
+    done();
+  });
+});
