@@ -49,7 +49,8 @@ router.post("/goals/create", (req, res, next) => {
       .then(result=>{
         const goalid = result[0].mgi + 1;
         const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status, goalname];
-        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7, @8)", goalinfo);
+        console.log(goalinfo)
+        queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7, @_8)", goalinfo);
         res.send({"goalid": goalid})
       })
       .catch(err=>{
