@@ -103,7 +103,7 @@ router.post('/login',function(req,res){
 router.get("/goals/getAllGoals/:id", (req, res, next) => {
   const itemId = req.params.id;
 
-  queryDb("SELECT GoalID from Goals where EmpID = @_1", [itemId])
+  queryDb("SELECT GoalID from Goals where EmpID in (SELECT empid from employees where empid = @_1 or managedby = @_1)", [itemId])
       .then(result=>{
         res.send(result);
       })
