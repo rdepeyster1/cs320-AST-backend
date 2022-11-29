@@ -23,7 +23,7 @@ describe("Test all the goal API", () => {
         expect(response.statusCode).toBe(200);
         console.log(response);
         object = response._body;
-        expect(Object.keys(object).length).toBe(4);
+        expect(Object.keys(object).length).toBe(9);
         // expect(object.EmpID).toBe(1);
         done();
       });
