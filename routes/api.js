@@ -47,7 +47,10 @@ router.post("/goals/create", (req, res, next) => {
   const goalname = req.body.goalname
   queryDb("SELECT MAX(goalid) as mgi from Goals")
       .then(result=>{
-        const goalid = result[0].mgi + 1;
+        let goalid = 0;
+        if (result){
+          goalid = result[0].mgi + 1;
+        }
         const goalinfo = [goalid, empid, startdate, enddate, description, goaltype, status, goalname];
         console.log(goalinfo)
         queryDb("INSERT INTO GOALS VALUES(@_1, @_2, @_3, @_4, @_5, @_6, @_7, @_8)", goalinfo);
@@ -64,11 +67,15 @@ router.post("/comments/create", (req, res, next) => {
   const description = req.body.description;
   queryDb("SELECT MAX(commentid) as mgi from comments")
       .then(result=>{
-        const commentid = parseInt(result[0].mgi) + 1;
+        let commentid = 0;
+        if (result)
+        {
+          commentid = parseInt(result[0].mgi) + 1;
+        }
         const commentinfo = [commentid, goalid, empid, description];
         console.log(commentinfo)
         queryDb("INSERT INTO COMMENTS VALUES(@_1, @_2, @_3, @_4)", commentinfo);
-        res.send({"commentid": commentid})
+        res.send({"CommentID": commentid, "CommentDescription": description, "EmpID": empid, "GoalID": goalid})
       })
       .catch(err=>{
         res.status(500).send({"Error": err});
@@ -127,7 +134,7 @@ router.get("/comments/getAllComments/:id", (req, res, next) => {
 router.get("/comments/get/:id", (req, res, next) => {
   const itemId = req.params.id;
 
-  queryDb("SELECT * from Comments where commentID = @_1", [itemId])
+  queryDb("SELECT Comments.*, Employees.Firstname, Employees.Lastname from Comments INNER JOIN Employees ON Employees.EmpID = Comments.EmpID where Comments.GoalID = @_1", [itemId])
       .then(result=>{
         res.send(result);
       })
