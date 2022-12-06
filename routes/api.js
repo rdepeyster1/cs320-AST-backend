@@ -28,7 +28,7 @@ async function queryDb (query, values) {
 router.get("/goals/get/:id", (req, res, next) => {
   const itemId = req.params.id;
 
-  queryDb("SELECT * from Goals where GoalID = @_1", [itemId])
+  queryDb("SELECT g.goalid, g.empid, g.startdate, g.enddate, g.description, g.goaltype, g.status, g.goalname, e.firstname, e.lastname from Goals g, employees e where GoalID = @_1 and g.empid = e.empid", [itemId])
       .then(result=>{
         res.send(result);
       })
